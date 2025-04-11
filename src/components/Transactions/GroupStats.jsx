@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { getGroupStats } from '../../services/transactionService';
+import { getGroupStats } from '../../services/TransactionService';
 import LoadingSpinner from '../common/LoadingSpinner';
 import ErrorMessage from '../common/ErrorMessage';
 

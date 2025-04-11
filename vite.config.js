@@ -2,11 +2,11 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 
-// https://vite.dev/config/
 export default defineConfig({
+  base: '/', // 👈 THIS LINE is the key!
   plugins: [
     react(),
-    tailwindcss(),
+    tailwindcss()
   ],
   server: {
     proxy: {
@@ -14,14 +14,6 @@ export default defineConfig({
         target: 'http://localhost:5000',
         changeOrigin: true,
         secure: false,
-      },
-    },
-    historyApiFallback: true,
-  },
-  build: {
-    rollupOptions: {
-      output: {
-        manualChunks: undefined,
       },
     },
   },

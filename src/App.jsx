@@ -11,7 +11,7 @@ import GroupForm from './components/Groups/GroupForm';
 import Profile from './components/Auth/Profile';
 import GroupDetails from './components/Groups/GroupDetails';
 import AdminDashboard from './components/Dashboard/AdminDashboard';
-import MemberDashboard from './components/dashboard/MemberDashboard';
+import MemberDashboard from './components/Dashboard/MemberDashboard';
 import GroupList from  './components/Groups/GroupList'
 import GroupDiscovery from './components/Groups/GroupDiscovery';
 import { NotificationProvider } from './context/NotificationContext';

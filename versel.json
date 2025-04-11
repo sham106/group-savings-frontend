@@ -1,13 +1,12 @@
 {
-    "version": 2,
-    "routes": [
+    "rewrites": [
       {
-        "src": "/api/(.*)",
-        "dest": "https://group-savings-backend.onrender.com/api/$1"
+        "source": "/api/:path*",
+        "destination": "https://group-savings-backend.onrender.com/api/:path*"
       },
       {
-        "src": "/(.*)",
-        "dest": "/index.html"
+        "source": "/(.*)",
+        "destination": "/index.html"
       }
     ]
   }

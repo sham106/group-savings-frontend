@@ -1,12 +1,23 @@
 {
-    "rewrites": [
-      {
-        "source": "/api/:path*",
-        "destination": "https://group-savings-backend.onrender.com/api/:path*"
-      },
+    "version": 2,
+    "trailingSlash": false,
+    "cleanUrls": true,
+    "headers": [
       {
         "source": "/(.*)",
-        "destination": "/index.html"
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "no-store, must-revalidate"
+          }
+        ]
       }
+    ],
+    "rewrites": [
+      { "source": "/api/:path*", "destination": "https://group-savings-backend.onrender.com/api/:path*" }
+    ],
+    "routes": [
+      { "handle": "filesystem" },
+      { "src": "/.*", "dest": "/index.html", "status": 200 }
     ]
   }

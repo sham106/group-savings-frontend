@@ -3,7 +3,7 @@ import { getPendingWithdrawals, getGroupWithdrawals } from '../../services/Withd
 import LoadingSpinner from '../common/LoadingSpinner';
 import ErrorMessage from '../common/ErrorMessage';
 import PendingWithdrawals from '../withdrawals/PendingWithdrawals';
-import WithdrawalList from '../Withdrawals/WithdrawalList';
+// import WithdrawalList from '../Withdrawals/WithdrawalList';
 
 const AdminDashboard = ({ groupId }) => {
   const [pendingWithdrawals, setPendingWithdrawals] = useState([]);

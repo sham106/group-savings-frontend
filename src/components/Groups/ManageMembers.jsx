@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getGroupMembers, addGroupMember, removeGroupMember, promoteToAdmin } from '../../services/GroupService';
-import { searchUsers } from '../../services/UserService';
+import { searchUsers } from '../../services/Userservice';
 import { useAuth } from '../../context/AuthContext';
 import LoadingSpinner from '../common/LoadingSpinner';
 import ErrorMessage from '../common/ErrorMessage';

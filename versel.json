@@ -3,8 +3,7 @@
     "routes": [
       {
         "src": "/api/(.*)",
-        "dest": "https://group-savings-backend.onrender.com/api/$1",
-        "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"]
+        "dest": "https://group-savings-backend.onrender.com/api/$1"
       },
       {
         "src": "/(.*)",

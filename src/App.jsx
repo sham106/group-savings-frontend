@@ -4,7 +4,7 @@ import Home from './pages/Home';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
-import ProtectedRoute from './components/common/ProtectedRoute';
+import ProtectedRoute from './components/common/ProtectedRoute'
 import Navbar from './components/common/Navbar';
 import Footer from './components/common/Footer';
 import GroupForm from './components/Groups/GroupForm';

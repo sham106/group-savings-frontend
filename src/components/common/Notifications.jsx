@@ -90,6 +90,8 @@ const Notifications = () => {
         return '🔔';
       case 'withdrawal_approved':
         return '✅';
+      case 'mpesa_transaction': // Add M-Pesa notification type
+        return '📱';
       default:
         return '📌';
     }

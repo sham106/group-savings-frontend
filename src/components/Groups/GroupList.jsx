@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { getUserGroups } from '../../services/GroupService';
+import { getUserGroups, getGroupLoanStats } from '../../services/GroupService';
 import LoadingSpinner from '../common/LoadingSpinner';
 import ErrorMessage from '../common/ErrorMessage';
 
@@ -8,6 +8,8 @@ const GroupList = () => {
   const [groups, setGroups] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [loanStats, setLoanStats] = useState({});
+  const [statsLoading, setStatsLoading] = useState(false);
 
   useEffect(() => {
     const fetchGroups = async () => {
@@ -15,7 +17,8 @@ const GroupList = () => {
         const response = await getUserGroups();
         setGroups(response.groups);
       } catch (err) {
-        setError(err.message);
+        setError(err.message || "Failed to fetch groups");
+        console.error("Error fetching groups:", err);
       } finally {
         setLoading(false);
       }
@@ -23,6 +26,44 @@ const GroupList = () => {
 
     fetchGroups();
   }, []);
+
+  useEffect(() => {
+    if (groups.length === 0) return;
+    
+    const fetchLoanStats = async () => {
+      try {
+        setStatsLoading(true);
+        const stats = {};
+        
+        await Promise.all(groups.map(async (group) => {
+          try {
+            const response = await getGroupLoanStats(group.id);
+            stats[group.id] = response.data;
+          } catch (error) {
+            console.error(`Failed to fetch stats for group ${group.id}:`, error);
+            stats[group.id] = { 
+              total: 0, 
+              active: 0, 
+              pending: 0,
+              paid: 0,
+              rejected: 0,
+              total_amount: 0,
+              total_repaid: 0
+            };
+          }
+        }));
+        
+        setLoanStats(stats);
+      } catch (error) {
+        console.error('Global stats error:', error);
+        setError('Failed to load some loan statistics');
+      } finally {
+        setStatsLoading(false);
+      }
+    };
+
+    fetchLoanStats();
+  }, [groups]);
 
   if (loading) {
     return <LoadingSpinner />;
@@ -95,6 +136,8 @@ const GroupList = () => {
                   <p className="mt-2 text-sm text-gray-500 line-clamp-2">
                     {group.description || 'No description'}
                   </p>
+                  
+                  {/* Progress Bar */}
                   <div className="mt-4">
                     <div className="w-full bg-gray-200 rounded-full h-2.5">
                       <div
@@ -117,6 +160,28 @@ const GroupList = () => {
                         )}
                         %
                       </span>
+                    </div>
+                  </div>
+                  
+                  {/* Loan Information */}
+                  <div className="mt-4 grid grid-cols-3 gap-2 text-center">
+                    <div className="p-2 bg-indigo-50 rounded">
+                      <p className="text-xs font-medium text-indigo-800">Total Loans</p>
+                      <p className="text-sm font-semibold text-indigo-600">
+                        {loanStats[group.id]?.total || 0}
+                      </p>
+                    </div>
+                    <div className="p-2 bg-yellow-50 rounded">
+                      <p className="text-xs font-medium text-yellow-800">Pending</p>
+                      <p className="text-sm font-semibold text-yellow-600">
+                        {loanStats[group.id]?.pending || 0}
+                      </p>
+                    </div>
+                    <div className="p-2 bg-green-50 rounded">
+                      <p className="text-xs font-medium text-green-800">Active</p>
+                      <p className="text-sm font-semibold text-green-600">
+                        {loanStats[group.id]?.active || 0}
+                      </p>
                     </div>
                   </div>
                 </div>

@@ -103,11 +103,16 @@ const TransactionList = () => {
                     {transaction.group_name}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    {/* Update the transaction type display */}
                     <span
                       className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
                         transaction.transaction_type === 'CONTRIBUTION'
                           ? 'bg-green-100 text-green-800'
-                          : 'bg-purple-100 text-purple-800'
+                          : transaction.transaction_type === 'WITHDRAWAL'
+                          ? 'bg-purple-100 text-purple-800'
+                          : transaction.transaction_type === 'LOAN_REPAYMENT'
+                          ? 'bg-blue-100 text-blue-800'
+                          : 'bg-gray-100 text-gray-800'
                       }`}
                     >
                       {transaction.transaction_type}
@@ -115,9 +120,11 @@ const TransactionList = () => {
                   </td>
                   <td
                     className={`px-6 py-4 whitespace-nowrap text-sm font-medium ${
-                      transaction.transaction_type === 'CONTRIBUTION'
+                      transaction.transaction_type === 'CONTRIBUTION' || transaction.transaction_type === 'LOAN_REPAYMENT'
                         ? 'text-green-600'
-                        : 'text-purple-600'
+                        : transaction.transaction_type === 'WITHDRAWAL'
+                        ? 'text-purple-600'
+                        : 'text-gray-600'
                     }`}
                   >
                     ${transaction.amount}

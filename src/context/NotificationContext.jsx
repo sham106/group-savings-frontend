@@ -1,7 +1,13 @@
 // frontend/group-saving/src/context/NotificationContext.jsx
-import { createContext, useContext, useState, useEffect } from 'react';
-import { getNotifications, markNotificationAsRead, markAllNotificationsAsRead } from '../services/NotificationService';
+import { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import { 
+  getNotifications, 
+  markNotificationAsRead, 
+  markAllNotificationsAsRead,
+  setupNotificationListener 
+} from '../services/NotificationService';
 import { useAuth } from './AuthContext';
+import { useSocket } from './SocketContext'; // Optional: if you have socket context
 
 const NotificationContext = createContext();
 
@@ -12,46 +18,69 @@ export const NotificationProvider = ({ children }) => {
   const [unreadCount, setUnreadCount] = useState(0);
   const [loading, setLoading] = useState(false);
   const { user } = useAuth();
+  const socket = useSocket(); // Optional: if using WebSockets
 
-  useEffect(() => {
-    if (user) {
-      fetchNotifications();
-      
-      // Set up polling for notifications
-      const intervalId = setInterval(fetchNotifications, 30000); // Check every 30 seconds
-      
-      return () => clearInterval(intervalId);
-    }
-  }, [user]);
-
-  const fetchNotifications = async () => {
-    if (!user) return;
-    
+  const fetchNotifications = useCallback(async () => {
     try {
       setLoading(true);
       const data = await getNotifications(false, 20);
-      setNotifications(data.notifications);
-      setUnreadCount(data.unread_count);
+      setNotifications(data.notifications || []);
+      setUnreadCount(data.unread_count || 0);
+
+      // Debugging: Check if M-Pesa notifications are included
+      console.log('Fetched notifications:', data.notifications);
     } catch (error) {
       console.error('Failed to fetch notifications:', error);
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
+
+  // Handle new notifications from WebSocket or polling
+  const handleNewNotification = useCallback((newNotification) => {
+    setNotifications(prev => [newNotification, ...prev]);
+    setUnreadCount(prev => prev + 1);
+    
+    // Optional: Show toast notification
+    if (newNotification.type === 'CONTRIBUTION') {
+      console.log(`New contribution: ${newNotification.message}`);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!user) return;
+
+    // Initial fetch
+    fetchNotifications();
+
+    // Set up real-time updates
+    let cleanup;
+    
+    if (socket) {
+      // WebSocket implementation
+      socket.on('new_notification', handleNewNotification);
+      
+      cleanup = () => {
+        socket.off('new_notification', handleNewNotification);
+      };
+    } else {
+      // Polling fallback
+      const intervalId = setInterval(fetchNotifications, 30000);
+      cleanup = () => clearInterval(intervalId);
+    }
+
+    return cleanup;
+  }, [user, fetchNotifications, handleNewNotification, socket]);
 
   const markAsRead = async (notificationId) => {
     try {
       await markNotificationAsRead(notificationId);
       
-      // Update local state
-      setNotifications(prevNotifications => 
-        prevNotifications.map(notification => 
-          notification.id === notificationId 
-            ? { ...notification, read: true } 
-            : notification
+      setNotifications(prev => 
+        prev.map(n => 
+          n.id === notificationId ? { ...n, read: true } : n
         )
       );
-      
       setUnreadCount(prev => Math.max(0, prev - 1));
       return true;
     } catch (error) {
@@ -63,12 +92,9 @@ export const NotificationProvider = ({ children }) => {
   const markAllAsRead = async () => {
     try {
       await markAllNotificationsAsRead();
-      
-      // Update local state
-      setNotifications(prevNotifications => 
-        prevNotifications.map(notification => ({ ...notification, read: true }))
+      setNotifications(prev => 
+        prev.map(n => ({ ...n, read: true }))
       );
-      
       setUnreadCount(0);
       return true;
     } catch (error) {
@@ -85,7 +111,8 @@ export const NotificationProvider = ({ children }) => {
         loading,
         fetchNotifications,
         markAsRead,
-        markAllAsRead
+        markAllAsRead,
+        handleNewNotification // Expose if needed by other components
       }}
     >
       {children}

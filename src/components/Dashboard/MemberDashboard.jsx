@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { getUserAvailableBalance, getUserWithdrawals } from '../../services/WithdrawalService';
+import { checkLoanEligibility } from '../../services/LoanService'; // Add this import
 import LoadingSpinner from '../common/LoadingSpinner';
 import ErrorMessage from '../common/ErrorMessage';
 import WithdrawalList from '../withdrawals/WithdrawalList';
@@ -7,15 +8,17 @@ import WithdrawalList from '../withdrawals/WithdrawalList';
 const MemberDashboard = ({ groupId }) => {
   const [availableBalance, setAvailableBalance] = useState(0);
   const [pendingWithdrawals, setPendingWithdrawals] = useState([]);
+  const [loanEligibility, setLoanEligibility] = useState(null); // Add this state
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchDashboardData = async () => {
       try {
-        const [balanceResponse, withdrawalsResponse] = await Promise.all([
+        const [balanceResponse, withdrawalsResponse, loanEligibilityResponse] = await Promise.all([
           getUserAvailableBalance(groupId),
-          getUserWithdrawals()
+          getUserWithdrawals(),
+          getUserLoanEligibility(groupId) // Add this API call
         ]);
         
         setAvailableBalance(balanceResponse.available_balance);
@@ -24,6 +27,7 @@ const MemberDashboard = ({ groupId }) => {
           withdrawal => withdrawal.status === 'PENDING'
         );
         setPendingWithdrawals(pending);
+        setLoanEligibility(loanEligibilityResponse); // Set loan eligibility data
       } catch (err) {
         setError(err.message);
       } finally {
@@ -42,7 +46,7 @@ const MemberDashboard = ({ groupId }) => {
     <div className="space-y-6">
       <div className="bg-white shadow rounded-lg p-6">
         <h2 className="text-xl font-bold text-gray-900 mb-4">Member Dashboard</h2>
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
           <div className="bg-blue-50 rounded-lg p-4">
             <h3 className="text-sm font-medium text-blue-800">Available Balance</h3>
             <p className="mt-2 text-2xl font-semibold text-blue-600">
@@ -60,6 +64,17 @@ const MemberDashboard = ({ groupId }) => {
             </p>
             <p className="mt-1 text-xs text-yellow-600">
               You have {pendingWithdrawals.length} pending withdrawal {pendingWithdrawals.length === 1 ? 'request' : 'requests'}
+            </p>
+          </div>
+          
+          {/* In MemberDashboard.jsx, add to the stats grid */}
+          <div className="bg-indigo-50 rounded-lg p-4">
+            <h3 className="text-sm font-medium text-indigo-800">Available Loan</h3>
+            <p className="mt-2 text-2xl font-semibold text-indigo-600">
+              ${loanEligibility?.eligible_amount || 0}
+            </p>
+            <p className="mt-1 text-xs text-indigo-600">
+              Based on your savings
             </p>
           </div>
         </div>

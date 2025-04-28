@@ -4,6 +4,7 @@ import Hero from '../assets/hero.jpeg';
 import PeopleMeeting from '../assets/people-meeting.jpeg'
 import SavingJar from '../assets/saving-jar.jpeg'
 import WithdwalPic from '../assets/withdrawal.jpeg'
+import loan from '../assets/loan.jpeg'
 
 const Home = () => {
   const { user } = useAuth();
@@ -159,6 +160,34 @@ const Home = () => {
                   <img 
                     src={WithdwalPic} 
                     alt="Person receiving financial help" 
+                    className="rounded-lg shadow-md w-78 h-40 object-cover"
+                  />
+                </div>
+              </div>
+
+              {/* New Loan Feature Card */}
+              <div className="group relative bg-white p-6 focus-within:ring-2 focus-within:ring-inset focus-within:ring-blue-500 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300">
+                <div>
+                  <span className="rounded-lg inline-flex p-3 bg-blue-50 text-blue-700 ring-4 ring-white">
+                    <svg className="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                  </span>
+                </div>
+                <div className="mt-8">
+                  <h3 className="text-lg font-medium">
+                    <span className="absolute inset-0" aria-hidden="true"></span>
+                    Access Group Loans
+                  </h3>
+                  <p className="mt-2 text-sm text-gray-500">
+                    Apply for group loans with flexible terms, accountabilty and transparency. Empower your financial 
+                    goals with the support of your savings group.
+                  </p>
+                </div>
+                <div className="mt-4">
+                  <img 
+                    src={loan} 
+                    alt="Loan feature illustration" 
                     className="rounded-lg shadow-md w-78 h-40 object-cover"
                   />
                 </div>

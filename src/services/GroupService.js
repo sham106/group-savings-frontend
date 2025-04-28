@@ -11,10 +11,20 @@ export const createGroup = async (groupData) => {
 
 export const getUserGroups = async () => {
   try {
+    console.log('Fetching user groups...');
     const response = await api.get('/api/groups/');
+    console.log('Response received:', response);
+
+    if (!response || !response.data || !Array.isArray(response.data.groups)) {
+      console.error('Invalid response format:', response);
+      throw new Error('Invalid response format');
+    }
+
+    console.log('User groups fetched successfully:', response.data.groups);
     return response.data;
   } catch (error) {
-    throw new Error(error.error || 'Failed to fetch user groups');
+    console.error('Error fetching user groups:', error.response?.data || error.message);
+    throw new Error(error.response?.data?.error || 'Failed to fetch user groups');
   }
 };
 
@@ -191,4 +201,17 @@ export const promoteToAdmin = async (groupId, userId) => {
     throw new Error('Failed to promote member');
   }
   return response.json();
+};
+
+// In your GroupService.js
+export const getGroupLoanStats = async (groupId) => {
+  const response = await fetch(`/api/loans/group/${groupId}/stats`, {
+    headers: {
+      'Authorization': `Bearer ${localStorage.getItem('token')}`
+    }
+  });
+  if (!response.ok) {
+    throw new Error('Failed to fetch group loan stats');
+  }
+  return await response.json();
 };

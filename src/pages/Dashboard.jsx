@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react';
-import { Outlet, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { getUserGroups, getPublicGroups } from '../services/GroupService';
+import { Outlet, useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { getUserGroups } from '../services/GroupService';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 import ErrorMessage from '../components/common/ErrorMessage';
 
@@ -18,7 +18,7 @@ const Dashboard = () => {
         const response = await getUserGroups();
         setGroups(response.groups);
       } catch (err) {
-        setError(err.message);
+        setError(err.message || 'Failed to load groups');
       } finally {
         setLoading(false);
       }
@@ -59,13 +59,12 @@ const Dashboard = () => {
                 >
                   <span className="truncate">My Groups</span>
                 </button>
-                {/* added discovery button */}
                 <button
                   onClick={() => navigate('/dashboard/discover')}
                   className="w-full text-left group flex items-center justify-between px-3 py-2 text-sm font-medium rounded-md hover:bg-gray-50 hover:text-gray-900 text-gray-600"
                 >
                   <span className="truncate">Discover Groups</span>
-                  {getPublicGroups.length > 0 && (
+                  {groups.length > 0 && (
                     <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
                       New
                     </span>

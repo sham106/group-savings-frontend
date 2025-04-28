@@ -22,7 +22,7 @@ const MpesaContributionForm = ({ onSuccess }) => {
       });
 
       setSuccess(true);
-      if (onSuccess) onSuccess(response);
+      if (onSuccess) onSuccess(response); // Trigger parent updates
     } catch (err) {
       setError(err.message);
     } finally {

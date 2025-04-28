@@ -61,9 +61,11 @@ export const initiateMpesaContribution = async (groupId, { amount, phone_number 
       throw new Error(error.error || 'Failed to initiate M-Pesa payment');
     }
 
-    return response.json();
+    const data = await response.json();
+    console.log('M-Pesa Contribution Success:', data); // Log success details
+    return data;
   } catch (error) {
-    console.error('Network or Server Error:', error.message); // Log network or server errors
+    console.error('Network or Server Error:', error.message);
     throw new Error('An unexpected error occurred while initiating M-Pesa payment.');
   }
 };

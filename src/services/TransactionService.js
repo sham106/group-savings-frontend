@@ -41,31 +41,48 @@ export const getGroupStats = async (groupId) => {
 };
 
 
+// export const initiateMpesaContribution = async (groupId, { amount, phone_number }) => {
+//   try {
+//     const response = await fetch(`/api/groups/${groupId}/contribute/mpesa`, {
+//       method: 'POST',
+//       headers: {
+//         'Content-Type': 'application/json',
+//         'Authorization': `Bearer ${localStorage.getItem('token')}`,
+//       },
+//       body: JSON.stringify({
+//         amount,
+//         phone_number: `254${phone_number}` // Convert to 254 format
+//       }),
+//     });
+
+//     if (!response.ok) {
+//       const error = await response.json();
+//       console.error('M-Pesa Contribution Error:', error); // Log error details
+//       throw new Error(error.error || 'Failed to initiate M-Pesa payment');
+//     }
+
+//     const data = await response.json();
+//     console.log('M-Pesa Contribution Success:', data); // Log success details
+//     return data;
+//   } catch (error) {
+//     console.error('Network or Server Error:', error.message);
+//     throw new Error('An unexpected error occurred while initiating M-Pesa payment.');
+//   }
+// };
 export const initiateMpesaContribution = async (groupId, { amount, phone_number }) => {
   try {
-    const response = await fetch(`/api/groups/${groupId}/contribute/mpesa`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${localStorage.getItem('token')}`,
-      },
-      body: JSON.stringify({
-        amount,
-        phone_number: `254${phone_number}` // Convert to 254 format
-      }),
+    const response = await api.post(`/api/groups/${groupId}/contribute/mpesa`, {
+      amount,
+      phone_number: `254${phone_number}` // Convert to 254 format
     });
 
-    if (!response.ok) {
-      const error = await response.json();
-      console.error('M-Pesa Contribution Error:', error); // Log error details
-      throw new Error(error.error || 'Failed to initiate M-Pesa payment');
-    }
-
-    const data = await response.json();
-    console.log('M-Pesa Contribution Success:', data); // Log success details
-    return data;
+    console.log('M-Pesa Contribution Success:', response.data);
+    return response.data;
   } catch (error) {
-    console.error('Network or Server Error:', error.message);
-    throw new Error('An unexpected error occurred while initiating M-Pesa payment.');
+    console.error('M-Pesa Contribution Error:', error.response?.data || error.message);
+    throw new Error(
+      error.response?.data?.error || 
+      'An unexpected error occurred while initiating M-Pesa payment.'
+    );
   }
 };

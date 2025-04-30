@@ -4,7 +4,7 @@ const Footer = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <div className="mb-4 md:mb-0">
-              <h2 className="text-xl font-bold">SavingsGroups</h2>
+              <h2 className="text-xl font-bold">CoSavr</h2>
               <p className="text-gray-400 mt-2">
                 Helping communities save together
               </p>
@@ -22,7 +22,7 @@ const Footer = () => {
             </div>
           </div>
           <div className="mt-6 pt-6 border-t border-gray-700 text-center text-gray-400 text-sm">
-            &copy; {new Date().getFullYear()} SavingsGroups. All rights reserved.
+            &copy; {new Date().getFullYear()} CoSavr. All rights reserved.
           </div>
         </div>
       </footer>

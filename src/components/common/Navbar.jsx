@@ -4,6 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { useNotifications } from '../../context/NotificationContext';
 import Notifications from './Notifications';
+import logo from '../../assets/logop.png'
 
 const Navbar = () => {
   const { user, logout } = useAuth();
@@ -26,7 +27,11 @@ const Navbar = () => {
         <div className="flex justify-between h-16">
           <div className="flex items-center">
             <Link to="/" className="flex-shrink-0 flex items-center">
-              <span className="font-bold text-xl">Group Savings</span>
+            <img 
+                src={logo} // Update the path to your logo file
+                alt="Group Savings Logo" 
+                className="h-24 w-auto" // Adjust height and width as needed
+              />
             </Link>
             {user && (
               <div className="hidden md:ml-6 md:flex md:space-x-8">
